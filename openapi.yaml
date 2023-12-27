@@ -1,0 +1,224 @@
+openapi: "3.0.2"
+info:
+  title: Notebook API
+  version: "1.0.0"
+servers:
+  - url: https://jupyzero.ipooo.me
+paths:
+  /notebooks/switch:
+    post:
+      operationId: switchNotebook
+      summary: c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notebook_id:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '404':
+          description: Notebook does not exist
+  /notebooks:
+    post:
+      operationId: createandswitchNotebook
+      summary: Create a new notebook and switch it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword:
+                  type: string
+                kernel_name:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+    # get:
+    #   operationId: getNotebooks
+    #   summary: Retrieve all notebooks
+    #   responses:
+    #     '200':
+    #       description: Successful operation
+  # /notebooks/{notebook_id}:
+  #   delete:
+  #     operationId: deleteNotebook
+  #     summary: Delete a specific notebook
+  #     parameters:
+  #       - name: notebook_id
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '204':
+  #         description: Successful operation
+  #       '404':
+  #         description: Notebook does not exist
+  /notebooks/execute:
+    post:
+      operationId: executeNotebook
+      summary: Execute all cells in the active notebook
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: No active notebook set
+  /notebooks/cells:
+    post:
+      operationId: addCellAndExecute
+      summary: Add a new cell and execute it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                type:
+                  type: string
+                  enum: [code, markdown]
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input or no active notebook set
+    get:
+      operationId: getCells
+      summary: Retrieve all cells in the active notebook
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: No active notebook set
+  /notebooks/cells/{cell_id}:
+    put:
+      operationId: updateCellAndExecute
+      summary: Update and execute a specific cell
+      parameters:
+        - name: cell_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                type:
+                  type: string
+                  enum: [code, markdown]
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input or no active notebook set
+        '404':
+          description: Cell does not exist
+    delete:
+      operationId: deleteCell
+      summary: Delete a specific cell
+      parameters:
+        - name: cell_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          description: No active notebook set
+        '404':
+          description: Cell does not exist
+  /notebooks/cells/{cell_id}/execute:
+    post:
+      operationId: executeCellAndSave
+      summary: Execute a specific cell and save it
+      parameters:
+        - name: cell_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: No active notebook set
+        '404':
+          description: Cell does not exist
+  /notebooks/cells/{cell_id}/output:
+    get:
+      operationId: getCellOutput
+      summary: Retrieve the output of a specific cell
+      parameters:
+        - name: cell_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: No active notebook set
+  /switch_kernel:
+    get:
+      operationId: switchKernelGet
+      summary: Get a list of available kernels
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Unexpected error occurred
+    post:
+      operationId: switchKernelPost
+      summary: Switch to a specific kernel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kernel_name:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: No kernel name provided
+        '500':
+          description: Unexpected error occurred
+  /current_kernel:
+    get:
+      operationId: currentKernel
+      summary: Retrieve the name of the current kernel
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Unexpected error occurred
